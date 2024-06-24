@@ -51,12 +51,12 @@ export const createVehicle = tryCatchWrapper(async function (req, res, next) {
 
 export const createVehicleBulk = tryCatchWrapper(async function (req, res, next) {
     const vehicles = req.body;
-
+    console.log("Start")
     // Validate the input
     if (!Array.isArray(vehicles) || vehicles.length === 0) {
         return next (createCustomError("Invalid input: Expected an array of vehicles", 400));
     }
-
+    console.log("Middle")
     // Validate each vehicle object
     for (const vehicle of vehicles) {
         const { type, lock_unlock_status, current_speed, battery_level, status, location } = vehicle;
@@ -64,13 +64,16 @@ export const createVehicleBulk = tryCatchWrapper(async function (req, res, next)
             return next (createCustomError("All fields are required", 400));
         }
     }
+    console.log("End")
     
     // Insert the vehicles into the database
     try {
+        console.log("Trying to insert Bulk")
         const insertedVehicles = await Vehicle.bulkCreate(vehicles); 
         return res.status(201).json({ message: "vehicle has been created", row});
+
     } catch (error) {
-        next(new CustomError("Error inserting vehicles", 500));
+        return next(createCustomError("Error inserting vehicles", 500));
     }
 });
 
