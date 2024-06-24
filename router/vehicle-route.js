@@ -1,5 +1,5 @@
 import express from "express";
-import { getVehicles, getSingleVehicle, createVehicle, updateVehicle, deleteVehicle } from "../vehicle-controller.js";
+import { getVehicles, getSingleVehicle, createVehicle, createVehicleBulk, updateVehicle, deleteVehicle } from "../vehicle-controller.js";
 import { auth } from "../middlewares/auth-middleware.js";
 import { admin, editor, viewer } from "../middlewares/roles.js";
 
@@ -13,5 +13,8 @@ router.route("/:id")
   .get(auth, viewer, getSingleVehicle)
   .patch(auth, editor, updateVehicle)
   .delete(auth, admin, deleteVehicle);
+
+router.route("/bulk")
+  .post(auth, editor, createVehicleBulk);
 
 export default router;

@@ -12,13 +12,9 @@ import Vehicle  from "./models/Vehicle.js";
 
 // Function to display a listing of vehicles.
 export const getVehicles = tryCatchWrapper(async function (req, res, next) {
-    const rows = await Vehicle.findAll().catch(err => {
-        console.error('Error fetching vehicles:', err);
-        next(err); // Pass error to error handling middleware
-    });
-
+    const rows = await Vehicle.findAll()
     if (!rows) {
-        return res.status(204).json({ message: "empty list" });
+        return next(createCustomError("empty list", 404));
     }
     return res.status(200).json({ vehicles: rows });
 });
@@ -58,21 +54,21 @@ export const createVehicleBulk = tryCatchWrapper(async function (req, res, next)
 
     // Validate the input
     if (!Array.isArray(vehicles) || vehicles.length === 0) {
-        throw new CustomError("Invalid input: Expected an array of vehicles", 400);
+        return next (createCustomError("Invalid input: Expected an array of vehicles", 400));
     }
 
     // Validate each vehicle object
     for (const vehicle of vehicles) {
         const { type, lock_unlock_status, current_speed, battery_level, status, location } = vehicle;
         if (!type || !lock_unlock_status || !current_speed || !battery_level || !status || !location) {
-            throw new CustomError("Invalid input: Missing required fields", 400);
+            return next (createCustomError("All fields are required", 400));
         }
     }
     
     // Insert the vehicles into the database
     try {
-        const insertedVehicles = await Vehicle.insertMany(vehicles); 
-        res.status(201).json(insertedVehicles);
+        const insertedVehicles = await Vehicle.bulkCreate(vehicles); 
+        return res.status(201).json({ message: "vehicle has been created", row});
     } catch (error) {
         next(new CustomError("Error inserting vehicles", 500));
     }
