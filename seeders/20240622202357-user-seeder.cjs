@@ -14,7 +14,7 @@ module.exports = {
     */
 
     await queryInterface.bulkInsert('users', [{
-      email: 'vincent@vincentlab.net',
+      email: 'email@email.com',
       password: '$2b$15$zqY2Q4eOoGzFpZkHJz9HS.BSfXc/HM2E/yTWa1awFmTMgN2bE72Uu',
       role: 'admin, editor, viewer' 
     }], {});

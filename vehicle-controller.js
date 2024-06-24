@@ -50,7 +50,7 @@ export const createVehicle = tryCatchWrapper(async function (req, res, next) {
       });
     const id = result.dataValues.vehicle_id
     const row = await Vehicle.findByPk(id);
-    return res.status(201).json({ message: "note has been created", row});
+    return res.status(201).json({ message: "vehicle has been created", row});
 });
 
 export const createVehicleBulk = tryCatchWrapper(async function (req, res, next) {
